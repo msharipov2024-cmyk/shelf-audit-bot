@@ -224,10 +224,25 @@ async def send_report(message, s):
 
     await message.reply_text("\n".join(lines), parse_mode="Markdown")
 
+def run_health_server():
+    import threading
+    from http.server import HTTPServer, BaseHTTPRequestHandler
+    class H(BaseHTTPRequestHandler):
+        def do_GET(self):
+            self.send_response(200)
+            self.end_headers()
+            self.wfile.write(b"OK")
+        def log_message(self, *args):
+            pass
+    port = int(os.environ.get("PORT", 10000))
+    HTTPServer(("0.0.0.0", port), H).serve_forever()
+
 def main():
     if not TELEGRAM_TOKEN:
         logger.error("TELEGRAM_TOKEN not set!")
         return
+    import threading
+    threading.Thread(target=run_health_server, daemon=True).start()
     logger.info("Starting bot...")
     app = Application.builder().token(TELEGRAM_TOKEN).build()
     app.add_handler(CommandHandler("start", start))
@@ -236,5 +251,6 @@ def main():
     app.add_handler(MessageHandler(filters.PHOTO, handle_photo))
     logger.info("Bot is running!")
     app.run_polling(drop_pending_updates=True, allowed_updates=Update.ALL_TYPES)
+
 if __name__ == "__main__":
     main()
