@@ -228,10 +228,6 @@ def main():
     if not TELEGRAM_TOKEN:
         logger.error("TELEGRAM_TOKEN not set!")
         return
-    if not ANTHROPIC_API_KEY:
-        logger.error("ANTHROPIC_API_KEY not set!")
-        return
-
     logger.info("Starting bot...")
     app = Application.builder().token(TELEGRAM_TOKEN).build()
     app.add_handler(CommandHandler("start", start))
