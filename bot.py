@@ -16,6 +16,28 @@ from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import cm
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, HRFlowable
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+import urllib.request
+
+def download_font():
+    font_path = "/tmp/DejaVuSans.ttf"
+    if not os.path.exists(font_path):
+        urllib.request.urlretrieve(
+            "https://github.com/dejavu-fonts/dejavu-fonts/raw/master/ttf/DejaVuSans.ttf",
+            font_path
+        )
+    font_bold = "/tmp/DejaVuSans-Bold.ttf"
+    if not os.path.exists(font_bold):
+        urllib.request.urlretrieve(
+            "https://github.com/dejavu-fonts/dejavu-fonts/raw/master/ttf/DejaVuSans-Bold.ttf",
+            font_bold
+        )
+    try:
+        pdfmetrics.registerFont(TTFont("DejaVu", font_path))
+        pdfmetrics.registerFont(TTFont("DejaVu-Bold", font_bold))
+    except:
+        pass
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
