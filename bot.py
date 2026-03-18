@@ -323,7 +323,7 @@ async def analyze_shelf(photo_b64: str, brand: str):
                 },
                 json={
                     "model": "claude-opus-4-6",
-                    "max_tokens": 1000,
+                    "max_tokens": 2000,
                     "messages": [{
                         "role": "user",
                         "content": [
@@ -341,9 +341,14 @@ async def analyze_shelf(photo_b64: str, brand: str):
                 }
             )
         data = resp.json()
-        text = data["content"][0]["text"].strip()
+      text = data["content"][0]["text"].strip()
         if "```" in text:
             text = text.split("```")[1].replace("json", "").strip()
+        # Find JSON boundaries
+        start = text.find("{")
+        end = text.rfind("}") + 1
+        if start >= 0 and end > start:
+            text = text[start:end]
         result = json.loads(text)
         scores = result["scores"]
         oos = result.get("oos", False)
