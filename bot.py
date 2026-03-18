@@ -235,7 +235,6 @@ def main():
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_text))
     app.add_handler(MessageHandler(filters.PHOTO, handle_photo))
     logger.info("Bot is running!")
-    app.run_polling(drop_pending_updates=True)
-
+    app.run_polling(drop_pending_updates=True, allowed_updates=Update.ALL_TYPES)
 if __name__ == "__main__":
     main()
